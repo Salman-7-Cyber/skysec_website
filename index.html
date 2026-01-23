@@ -1,502 +1,66 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sky Sec | المستقبل الرقمي</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sky Sec | Home</title>
 
-    <style>
-        /* --- المتغيرات والألوان --- */
-        :root {
-            --bg-color: #050a14;
-            --accent-main: #00f2ff; /* سماوي نيون */
-            --accent-secondary: #0078ff; /* أزرق كهربائي */
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-muted: #a0aab5;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* --- خلفية النجوم المتحركة --- */
-        #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at bottom, #0f1c30 0%, #050a14 100%);
-        }
-
-        /* --- شريط التنقل (Glass Header) --- */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            background: rgba(5, 10, 20, 0.7);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
-            transition: 0.3s;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 500;
-            position: relative;
-            padding-bottom: 5px;
-            transition: 0.3s;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            right: 0;
-            background: var(--accent-main);
-            transition: 0.3s;
-        }
-
-        nav a:hover::after { width: 100%; }
-
-        /* --- القسم الرئيسي (Hero) --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 5rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            animation: fadeUp 1s ease-out;
-        }
-
-        .hero h1 span {
-            color: var(--accent-main);
-            display: block;
-            font-size: 2rem;
-            font-weight: 300;
-            letter-spacing: 5px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin-bottom: 40px;
-            animation: fadeUp 1.2s ease-out;
-        }
-
-        .btn-glow {
-            padding: 15px 40px;
-            background: transparent;
-            border: 1px solid var(--accent-main);
-            color: var(--accent-main);
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: 0.4s;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
-            animation: fadeUp 1.4s ease-out;
-        }
-
-        .btn-glow:hover {
-            background: var(--accent-main);
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
-        }
-
-        /* --- العناوين المشتركة --- */
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 60px;
-            position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--accent-secondary);
-            margin: 10px auto;
-            border-radius: 2px;
-        }
-
-        /* --- قسم من نحن (الكروت الزجاجية) --- */
-        section { padding: 100px 10%; position: relative; }
-
-        .about-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-
-        .glass-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            padding: 40px 30px;
-            border-radius: 20px;
-            text-align: center;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
-            transform: translateY(50px);
-            opacity: 0;
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: 0.4s;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-10px) !important;
-            border-color: var(--accent-main);
-            box-shadow: 0 10px 40px -10px rgba(0, 242, 255, 0.2);
-        }
-
-        .glass-card:hover::before { opacity: 1; }
-
-        .icon-box {
-            font-size: 3.5rem;
-            margin-bottom: 25px;
-            background: linear-gradient(to bottom, var(--accent-main), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .glass-card h3 { font-size: 1.5rem; margin-bottom: 15px; }
-        .glass-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
-
-        /* أيقونات التواصل */
-        .social-icons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .social-icons a {
-            color: var(--text-main);
-            font-size: 1.5rem;
-            transition: 0.3s;
-        }
-        .social-icons a:hover { color: var(--accent-main); transform: scale(1.2); }
-
-        /* --- قسم المشاريع --- */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .project-item {
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            height: 300px;
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            transform: translateY(50px);
-            opacity: 0;
-        }
-
-        .project-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: 0.5s;
-        }
-
-        .project-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 30px;
-            opacity: 0;
-            transition: 0.5s;
-        }
-
-        .project-item:hover img { transform: scale(1.1); }
-        .project-item:hover .project-overlay { opacity: 1; }
-
-        .project-overlay h3 { color: var(--accent-main); margin-bottom: 10px; transform: translateY(20px); transition: 0.5s; }
-        .project-overlay p { font-size: 0.9rem; transform: translateY(20px); transition: 0.5s 0.1s; }
-        
-        .project-item:hover .project-overlay h3,
-        .project-item:hover .project-overlay p { transform: translateY(0); }
-
-        /* --- الفوتر --- */
-        footer {
-            border-top: 1px solid var(--glass-border);
-            padding: 40px;
-            text-align: center;
-            background: rgba(0,0,0,0.5);
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        /* --- الأنيميشن --- */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* كلاس للجافاسكربت عند الظهور */
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ميديا كويري للجوال */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 3rem; }
-            header { padding: 15px 20px; flex-direction: column; gap: 15px; }
-            .section-title { font-size: 2.2rem; }
-        }
-
-    </style>
+  <!-- Fonts & Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <!-- Animated Background -->
+  <canvas id="canvas-bg"></canvas>
 
-    <canvas id="canvas-bg"></canvas>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo">SKY SEC</a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Our Team</a></li>
+        <li class="nav-dropdown">
+          <a href="#">Projects <span class="arrow">▾</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="tutorials.html">Tutorials</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
 
-    <header>
-        <div class="logo">SKY SEC</div>
-        <nav>
-            <ul>
-                <li><a href="#home">الرئيسية</a></li>
-                <li><a href="#about">عن Sky</a></li>
-                <li><a href="#projects">أعمالنا</a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>
+      <span>WELCOME TO</span>
+      SKY SEC
+    </h1>
+    <p>
+      We elevate you into the world of digital security.
+      Advanced cybersecurity and software solutions designed for the future.
+    </p>
+  </section>
+  <div class="hero-divider"></div>
+  
+    <!-- Summary (Top Rectangle) -->
+         <h2 class="team-title reveal">Who We Are</h2>
+    <div class="glass-card reveal about-summary">
+      <p class="index-summary-text">
+        Sky Sec is a three-member tech team combining cybersecurity and software development to build secure,
+        practical, and high-quality digital solutions. Our goal is to deliver real projects, valuable content,
+        and experiences that showcase our skills in a clear and professional way.
+      </p>
+    </div>
+  <!-- Footer -->
+  <footer>
+    <p>&copy; Copyright © 2026 SkySec</p>
+  </footer>
 
-    <section id="home" class="hero">
-        <h1>
-            <span>WELCOME TO</span>
-            SKY SEC
-        </h1>
-        <p>نُحلّق بك في سماء الأمان الرقمي. حلول برمجية وأمنية تسبق عصرها.</p>
-        <a href="#about" class="btn-glow">ابدأ الرحلة</a>
-    </section>
-
-    <section id="about">
-        <h2 class="section-title reveal">من نكون؟</h2>
-        <div class="about-container">
-            
-            <div class="glass-card reveal">
-                <div class="icon-box"><i class="fas fa-fingerprint"></i></div>
-                <h3>هويتنا</h3>
-                <p>نحن Sky Sec، كيان يدمج بين الإبداع التقني والأمان السيبراني. رؤيتنا هي بناء حصن رقمي لشركائنا بأساليب غير تقليدية.</p>
-            </div>
-
-            <div class="glass-card reveal" style="transition-delay: 0.2s;">
-                <div class="icon-box"><i class="fas fa-users-cog"></i></div>
-                <h3>فريقنا</h3>
-                <p>نخبة من المطورين وخبراء الأمن السيبراني. شغفنا لا يتوقف عند كتابة الكود، بل يمتد لصناعة تجربة مستخدم آمنة ومذهلة.</p>
-            </div>
-
-            <div class="glass-card reveal" style="transition-delay: 0.4s;">
-                <div class="icon-box"><i class="fas fa-share-nodes"></i></div>
-                <h3>تواصل معنا</h3>
-                <p>كن جزءاً من عالمنا. تابعنا أو تواصل معنا مباشرة عبر المنصات التالية:</p>
-                <div class="social-icons">
-                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="mailto:contact@skysec.com"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="projects">
-        <h2 class="section-title reveal">إبداعاتنا</h2>
-        <div class="projects-grid">
-            <div class="project-item reveal">
-                <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop" alt="Project 1">
-                <div class="project-overlay">
-                    <h3>Cyber Shield</h3>
-                    <p>نظام حماية متطور للشركات الناشئة.</p>
-                </div>
-            </div>
-            <div class="project-item reveal" style="transition-delay: 0.2s;">
-                <img src="https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=1000&auto=format&fit=crop" alt="Project 2">
-                <div class="project-overlay">
-                    <h3>Cloud Sky</h3>
-                    <p>حلول سحابية آمنة وسريعة.</p>
-                </div>
-            </div>
-            <div class="project-item reveal" style="transition-delay: 0.4s;">
-                <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop" alt="Project 3">
-                <div class="project-overlay">
-                    <h3>Secure App</h3>
-                    <p>تطبيق للهواتف الذكية بمعايير أمان عالية.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2024 Sky Sec. All Rights Reserved. <span style="color:var(--accent-main)">Designed for Excellence.</span></p>
-    </footer>
-
-    <script>
-        // --- 1. أنيميشن الخلفية (Canvas) ---
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        let particlesArray;
-
-        // إنشاء الجزيئات
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.speedX = (Math.random() * 0.5) - 0.25;
-                this.speedY = (Math.random() * 0.5) - 0.25;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
-            }
-            draw() {
-                ctx.fillStyle = '#00f2ff';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function init() {
-            particlesArray = [];
-            for (let i = 0; i < 100; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                
-                // رسم خطوط بين النقاط القريبة (شبكة)
-                for (let j = i; j < particlesArray.length; j++) {
-                    const dx = particlesArray[i].x - particlesArray[j].x;
-                    const dy = particlesArray[i].y - particlesArray[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(0, 242, 255, ${0.1 - distance/1000})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        init();
-        animate();
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            init();
-        });
-
-        // --- 2. أنيميشن ظهور العناصر عند السكرول (Scroll Reveal) ---
-        window.addEventListener('scroll', reveal);
-
-        function reveal() {
-            var reveals = document.querySelectorAll('.reveal');
-            for (var i = 0; i < reveals.length; i++) {
-                var windowheight = window.innerHeight;
-                var revealtop = reveals[i].getBoundingClientRect().top;
-                var revealpoint = 150;
-
-                if (revealtop < windowheight - revealpoint) {
-                    reveals[i].classList.add('active');
-                }
-            }
-        }
-        // تفعيل الدالة مرة واحدة عند التحميل
-        reveal();
-    </script>
+  <script src="script.js"></script>
 </body>
 </html>
