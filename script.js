@@ -106,18 +106,27 @@ async function analyzeEmail() {
     return;
   }
 
-  const response = await fetch("https://phishing-email-api-sido.onrender.com/analyze", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ text: text })
-  });
+  try {
+    const response = await fetch(
+      "https://phishing-email-api-sido.onrender.com/analyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text })
+      }
+    );
 
-  const data = await response.json();
+    const data = await response.json();
+    renderResult(data);
 
- renderResult(data);
+  } catch (error) {
+    console.error("API Error:", error);
+    alert("Failed to analyze email. Check console.");
+  }
 }
+
 
 function renderResult(data) {
   const resultCard = document.getElementById("resultCard");
@@ -157,12 +166,4 @@ function renderResult(data) {
 
   resultCard.scrollIntoView({ behavior: "smooth" });
 
-  const infoCards = document.querySelectorAll(".info-card");
-
-infoCards.forEach(card => {
-  card.classList.remove("high", "medium", "low");
-  card.classList.add(riskLevel);
-});
-
 }
-
