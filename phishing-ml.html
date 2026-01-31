@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sky Sec | Projects</title>
+
+  <!-- Libraries & Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Animated particles background -->
+  <canvas id="canvas-bg"></canvas>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="logo">SKY SEC</a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">Our Team</a></li>
+        <li class="nav-dropdown">
+          <a href="#">Projects <span class="arrow">▾</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="articles.html">Articles</a></li>
+            <li><a href="tutorials.html">Tutorials</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="phishing-ml-project">
+  <h2 class="section-title reveal">Phishing Email Detection ML</h2>
+  <h2 class="subtitle">Paste Email Content</h2>
+
+  <textarea id="emailText" rows="10" cols="80"
+    placeholder="Paste the email here..."></textarea>
+
+  <br><br>
+
+  <button onclick="analyzeEmail()">Analyze</button>
+
+
+<script src="script.js"></script>
+
+<div id="resultCard" class="result-card hidden reveal">
+
+  <h2 id="riskTitle"></h2>
+
+  <p class="score">
+    Risk Score: <span id="riskScore"></span>
+  </p>
+
+  <p class="type">
+    Phishing Type: <span id="phishingType"></span>
+  </p>
+
+  <div class="info-card">
+    <h3>Why was this email flagged?</h3>
+    <ul id="reasonsList"></ul>
+  </div>
+
+  <div class="info-card warning">
+    <h3>Recommended Action</h3>
+    <p id="recommendationText"></p>
+  </div>
+
+</body>
+</html>
