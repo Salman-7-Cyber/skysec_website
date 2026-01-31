@@ -96,5 +96,72 @@ function reveal() {
   }
 }
 
-// تفعيل الدالة مرة واحدة عند التحميل
 reveal();
+
+async function analyzeEmail() {
+  const text = document.getElementById("emailText").value;
+
+  if (text.trim().length < 10) {
+    alert("Please paste a full email.");
+    return;
+  }
+
+  const response = await fetch("http://127.0.0.1:8000/analyze", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text: text })
+  });
+
+  const data = await response.json();
+
+ renderResult(data);
+}
+
+function renderResult(data) {
+  const resultCard = document.getElementById("resultCard");
+  const riskTitle = document.getElementById("riskTitle");
+  const riskScore = document.getElementById("riskScore");
+  const phishingType = document.getElementById("phishingType");
+  const reasonsList = document.getElementById("reasonsList");
+  const recommendationText = document.getElementById("recommendationText");
+
+  resultCard.classList.remove("hidden", "high", "medium", "low");
+
+  riskTitle.textContent = data.risk_level;
+  riskScore.textContent = (data.risk_score * 100).toFixed(2) + "%";
+  phishingType.textContent = data.phishing_type || "Unknown";
+  recommendationText.textContent = data.recommendation;
+
+  if (data.risk_score >= 0.7) {
+    resultCard.classList.add("high");
+  } else if (data.risk_score >= 0.4) {
+    resultCard.classList.add("medium");
+  } else {
+    resultCard.classList.add("low");
+  }
+
+  reasonsList.innerHTML = "";
+  if (data.reasons && data.reasons.length > 0) {
+    data.reasons.forEach(reason => {
+      const li = document.createElement("li");
+      li.textContent = reason;
+      reasonsList.appendChild(li);
+    });
+  } else {
+    const li = document.createElement("li");
+    li.textContent = "No specific phishing indicators detected.";
+    reasonsList.appendChild(li);
+  }
+
+  resultCard.scrollIntoView({ behavior: "smooth" });
+
+  const infoCards = document.querySelectorAll(".info-card");
+
+infoCards.forEach(card => {
+  card.classList.remove("high", "medium", "low");
+  card.classList.add(riskLevel);
+});
+
+}
