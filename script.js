@@ -108,7 +108,7 @@ async function analyzeEmail() {
 
   try {
     const response = await fetch(
-      "https://phishing-email-api-sido.onrender.com/analyze",
+      "http://127.0.0.1:8000",
       {
         method: "POST",
         headers: {
@@ -167,3 +167,4 @@ function renderResult(data) {
   resultCard.scrollIntoView({ behavior: "smooth" });
 
 }
+
