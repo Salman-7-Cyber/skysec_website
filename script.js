@@ -96,7 +96,7 @@ function reveal() {
 
 reveal();
 
-// --- 3. Phishing Detection API Integration ---
+// --- 3. Phishing Detection API ---
 async function analyzeEmail() {
   const emailText = document.getElementById("emailText").value;
   
@@ -105,9 +105,11 @@ async function analyzeEmail() {
     return;
   }
 
-  const analyzeBtn = document.getElementById("analyzeBtn");
-  analyzeBtn.disabled = true;
-  analyzeBtn.textContent = "Analyzing...";
+  const analyzeBtn = document.querySelector('button[onclick="analyzeEmail()"]');
+  if (analyzeBtn) {
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "Analyzing...";
+  }
 
   try {
     const response = await fetch('https://salman7qari-phishing-email-detection.hf.space/analyze', {
@@ -134,8 +136,10 @@ async function analyzeEmail() {
     console.error("API Error:", error);
     alert("Failed to analyze email. Please check your connection and try again.");
   } finally {
-    analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "Analyze";
+    if (analyzeBtn) {
+      analyzeBtn.disabled = false;
+      analyzeBtn.textContent = "Analyze";
+    }
   }
 }
 
