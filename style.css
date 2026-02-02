@@ -831,8 +831,8 @@ footer {
   nav ul {
     gap: 18px;
   }
-  
 }
+
   @media (max-width: 768px) {
   .index-summary-text {
     font-size: 1.1rem;
@@ -842,3 +842,4 @@ footer {
   line-height: 1.9;
 }
 }
+
