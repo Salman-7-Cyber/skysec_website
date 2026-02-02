@@ -98,27 +98,17 @@ function reveal() {
 
 reveal();
 
-async function analyzeEmail() {
-  const text = document.getElementById("emailText").value;
-
-  if (text.trim().length < 10) {
-    alert("Please paste a full email.");
-    return;
-  }
-
+async function checkPhishing(emailText) {
   try {
-    const response = await fetch(
-      "http://127.0.0.1:8000",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ text })
-      }
-    );
-
-    const data = await response.json();
+    const response = await fetch('https://salman7qari-phishing-email-detection.hf.space/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: emailText })
+    });
+    
+    const result = await response.json();
     renderResult(data);
 
   } catch (error) {
@@ -167,4 +157,5 @@ function renderResult(data) {
   resultCard.scrollIntoView({ behavior: "smooth" });
 
 }
+
 
