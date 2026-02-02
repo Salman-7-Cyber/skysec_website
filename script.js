@@ -1,4 +1,4 @@
-// --- 1. أنيميشن الخلفية (Canvas) ---
+// --- 1. Canvas Background Animation ---
 const canvas = document.getElementById("canvas-bg");
 const ctx = canvas.getContext("2d");
 
@@ -11,7 +11,7 @@ setCanvasSize();
 
 let particlesArray;
 
-// إنشاء الجزيئات
+// Create particles
 class Particle {
   constructor() {
     this.x = Math.random() * canvas.width;
@@ -51,7 +51,7 @@ function animate() {
     particlesArray[i].update();
     particlesArray[i].draw();
 
-    // رسم خطوط بين النقاط القريبة (شبكة)
+    // Draw lines between nearby particles
     for (let j = i; j < particlesArray.length; j++) {
       const dx = particlesArray[i].x - particlesArray[j].x;
       const dy = particlesArray[i].y - particlesArray[j].y;
@@ -79,7 +79,7 @@ window.addEventListener("resize", () => {
   init();
 });
 
-// --- 2. أنيميشن ظهور العناصر عند السكرول (Scroll Reveal) ---
+// --- 2. Scroll Reveal Animation ---
 window.addEventListener("scroll", reveal);
 
 function reveal() {
@@ -98,7 +98,21 @@ function reveal() {
 
 reveal();
 
+// --- 3. Phishing Detection API Integration ---
 async function checkPhishing(emailText) {
+  // Validate input
+  if (!emailText || emailText.trim().length < 10) {
+    alert("⚠️ Please enter at least 10 characters of email text.");
+    return;
+  }
+
+  // Show loading state (optional - add a loading spinner to your HTML)
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  if (analyzeBtn) {
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = "Analyzing...";
+  }
+
   try {
     const response = await fetch('https://salman7qari-phishing-email-detection.hf.space/analyze', {
       method: 'POST',
@@ -107,16 +121,31 @@ async function checkPhishing(emailText) {
       },
       body: JSON.stringify({ text: emailText })
     });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
     
     const result = await response.json();
-    renderResult(data);
+    
+    // Check for API errors
+    if (result.error) {
+      throw new Error(result.error);
+    }
+    
+    renderResult(result);
 
   } catch (error) {
     console.error("API Error:", error);
-    alert("Failed to analyze email. Check console.");
+    alert("⚠️ Failed to analyze email. Please try again later.");
+  } finally {
+    // Reset button state
+    if (analyzeBtn) {
+      analyzeBtn.disabled = false;
+      analyzeBtn.textContent = "Analyze Email";
+    }
   }
 }
-
 
 function renderResult(data) {
   const resultCard = document.getElementById("resultCard");
@@ -126,13 +155,16 @@ function renderResult(data) {
   const reasonsList = document.getElementById("reasonsList");
   const recommendationText = document.getElementById("recommendationText");
 
+  // Remove previous classes
   resultCard.classList.remove("hidden", "high", "medium", "low");
 
+  // Set content
   riskTitle.textContent = data.risk_level;
   riskScore.textContent = (data.risk_score * 100).toFixed(2) + "%";
   phishingType.textContent = data.phishing_type || "Unknown";
   recommendationText.textContent = data.recommendation;
 
+  // Add risk level class for styling
   if (data.risk_score >= 0.7) {
     resultCard.classList.add("high");
   } else if (data.risk_score >= 0.4) {
@@ -141,6 +173,7 @@ function renderResult(data) {
     resultCard.classList.add("low");
   }
 
+  // Populate reasons list
   reasonsList.innerHTML = "";
   if (data.reasons && data.reasons.length > 0) {
     data.reasons.forEach(reason => {
@@ -154,8 +187,19 @@ function renderResult(data) {
     reasonsList.appendChild(li);
   }
 
+  // Smooth scroll to result
   resultCard.scrollIntoView({ behavior: "smooth" });
-
 }
 
+// Example: Connect to a form
+document.addEventListener("DOMContentLoaded", () => {
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const emailInput = document.getElementById("emailInput");
 
+  if (analyzeBtn && emailInput) {
+    analyzeBtn.addEventListener("click", () => {
+      const emailText = emailInput.value;
+      checkPhishing(emailText);
+    });
+  }
+});
