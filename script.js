@@ -125,7 +125,46 @@ function isGibberish(text) {
   return false;
 }
 
-// --- 4. Retry / Delay Helper ---
+// --- 4. Code Detection ---
+function containsCode(text) {
+  const trimmed = text.trim();
+
+  // HTML tags: <script>, <img>, <iframe>, <div>, <a href>, etc.
+  const htmlTags = /<\s*(script|img|iframe|div|a|form|input|svg|object|embed|link|style|meta|body|html|head)\b[^>]*>/i;
+
+  // JavaScript patterns
+  const jsPatterns = /\b(function\s*\(|var\s+|let\s+|const\s+|=>|document\.|window\.|alert\s*\(|eval\s*\(|fetch\s*\(|XMLHttpRequest|console\.|require\s*\(|import\s+|export\s+)\b/i;
+
+  // Python patterns
+  const pythonPatterns = /\b(def\s+|import\s+|from\s+\w+\s+import|print\s*\(|class\s+\w+|if\s+__name__|self\.)\b/i;
+
+  // PHP patterns
+  const phpPatterns = /<\?php|\$_GET|\$_POST|\$_SERVER|echo\s+/i;
+
+  // SQL patterns
+  const sqlPatterns = /\b(SELECT\s+.*\s+FROM|INSERT\s+INTO|UPDATE\s+.*\s+SET|DELETE\s+FROM|DROP\s+TABLE|CREATE\s+TABLE|ALTER\s+TABLE|UNION\s+SELECT)\b/i;
+
+  // C / C++ / Java patterns
+  const cPatterns = /\b(#include\s*<|public\s+static|private\s+|protected\s+|int\s+main\s*\(|void\s+\w+\s*\(|System\.out\.print)\b/i;
+
+  // Curly braces blocks (code structure)
+  const curlyBraces = /\{[^}]*\}/;
+
+  // Check each pattern
+  if (htmlTags.test(trimmed)) return true;
+  if (jsPatterns.test(trimmed)) return true;
+  if (pythonPatterns.test(trimmed)) return true;
+  if (phpPatterns.test(trimmed)) return true;
+  if (sqlPatterns.test(trimmed)) return true;
+  if (cPatterns.test(trimmed)) return true;
+
+  // Curly braces + semicolons together = likely code
+  if (curlyBraces.test(trimmed) && trimmed.includes(";")) return true;
+
+  return false;
+}
+
+// --- 5. Retry / Delay Helper ---
 function delay(seconds) {
   return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 }
@@ -161,11 +200,11 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
   throw lastError;
 }
 
-// --- 5. Phishing Detection API ---
+// --- 6. Phishing Detection API ---
 async function analyzeEmail() {
   const emailText = document.getElementById("emailText").value;
 
-  // --- Validation (قبل إرسال للـ API) ---
+  // --- Validation ---
   if (!emailText || emailText.trim().length === 0) {
     alert("Please paste the email content first.");
     return;
@@ -183,6 +222,11 @@ async function analyzeEmail() {
 
   if (isGibberish(emailText)) {
     alert("The text appears to be unreadable or contains random characters.\nPlease paste a real email to analyze.");
+    return;
+  }
+
+  if (containsCode(emailText)) {
+    alert("Code detected in the input.\nThis tool only accepts email text, not code.\nPlease paste a real email to analyze.");
     return;
   }
 
@@ -220,23 +264,21 @@ async function analyzeEmail() {
     const result = await response.json();
     console.log("API Result:", result);
 
-    // --- Handle API errors (بعد إرسال للـ API) ---
+    // --- Handle API errors ---
     if (!response.ok) {
       if (response.status === 400) {
-        // الـ API رجع 400 = مشكلة في النص
-        // نحدد السبب من جهتنا بدل ما نعرض تفاصيل السيرفر
         if (isTooShort(emailText)) {
           alert("The text is too short.\nPlease paste a complete email to analyze.");
         } else if (isTooLong(emailText)) {
           alert("The text is too long.\nPlease paste a shorter email to analyze.");
         } else if (isGibberish(emailText)) {
           alert("The text appears to be unreadable or contains random characters.\nPlease paste a real email to analyze.");
+        } else if (containsCode(emailText)) {
+          alert("Code detected in the input.\nThis tool only accepts email text, not code.\nPlease paste a real email to analyze.");
         } else {
           alert("The text could not be processed.\nPlease try pasting the email again.");
         }
       } else {
-        // 500, 503, أي خطأ من السيرفر
-        // مو نقول "API نايم" عشان السيكورتي
         alert("The service is temporarily unavailable.\nPlease try again in a few moments.");
       }
       return;
@@ -250,8 +292,6 @@ async function analyzeEmail() {
     renderResult(result);
 
   } catch (error) {
-    // كل الـ retries فشلت
-    // مو نقول "API نايم" أو "connection failed" عشان السيكورتي
     console.error("All retries failed:", error);
     alert("The service is temporarily unavailable.\nPlease try again in a few moments.");
   } finally {
@@ -262,7 +302,7 @@ async function analyzeEmail() {
   }
 }
 
-// --- 6. Render Results ---
+// --- 7. Render Results ---
 function renderResult(data) {
   const resultCard = document.getElementById("resultCard");
   const riskTitle = document.getElementById("riskTitle");
