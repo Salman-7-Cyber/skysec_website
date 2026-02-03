@@ -10,7 +10,7 @@
   --glass-border: rgba(255, 255, 255, 0.1);
 
   --text-main: #ffffff;
-  --text-muted: #a0aab5; /* كان أبيض - هذا أفضل */
+  --text-muted: #a0aab5;
 }
 
 /* =========================
@@ -32,15 +32,12 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   overflow-x: hidden;
-  
-  /* الحل السحري */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-/* اجعل المحتوى ياخذ كل المساحة المتبقية */
-body > *:not(header):not(footer):not(#canvas-bg) {
+.wrapper {
   flex: 1 0 auto;
 }
 
@@ -65,16 +62,13 @@ header {
   top: 0;
   width: 100%;
   padding: 20px 50px;
-
   display: flex;
   align-items: center;
-  justify-content: center; /* يجعل الـ nav بالوسط */
-
+  justify-content: center;
   z-index: 1000;
   background: rgba(5, 10, 20, 0.7);
   backdrop-filter: blur(15px);
   border-bottom: 1px solid var(--glass-border);
-  --header-pad: 20px; /* لتعديل التباعد بسهولة */
 }
 
 .logo {
@@ -82,11 +76,9 @@ header {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
-
   background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
   position: absolute;
   left: 50px;
   text-decoration: none;
@@ -121,90 +113,75 @@ nav a::after {
 nav a:hover::after {
   width: 100%;
 }
+
 .nav-dropdown > a::after {
   display: none !important;
 }
 
 /* ===== Dropdown ===== */
-.nav-dropdown{
+.nav-dropdown {
   position: relative;
 }
-/* THE SUB-MENU */
-.dropdown-menu{
+
+.dropdown-menu {
   position: absolute;
   display: block !important;
   top: calc(100% + 20px - 1px);
-
   left: 50%;
   transform: translateX(-50%);
-
   min-width: 220px;
   padding: 8px 0;
   margin: 0;
-
   list-style: none;
-
   background: rgba(5, 10, 20, 0.7);
   backdrop-filter: blur(12px);
-
   border-radius: 0 0 14px 14px;
   border: 1px solid rgba(255,255,255,0.12);
   border-top: none;
-
-  /* THE BLUE LINE*/
   box-shadow: 0 -3px 0 var(--accent-main);
-
-  /* الإخفاء */
   opacity: 0;
   visibility: hidden;
   transform: translateX(-50%) translateY(10px);
   transition: .25s ease;
-
   z-index: 2000;
 }
 
-/* الظهور */
-.nav-dropdown:hover .dropdown-menu{
+.nav-dropdown:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateX(-50%) translateY(0);
 }
 
-/* عناصر القائمة — عمودية */
-.dropdown-menu li{
+.dropdown-menu li {
   display: block !important;
   width: 100% !important;
 }
 
-/* الروابط */
-.dropdown-menu li a{
+.dropdown-menu li a {
   display: block !important;
   width: 100% !important;
   padding: 12px 22px;
-
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
-
   text-decoration: none;
   text-align: center;
-
   transition: .2s ease;
 }
 
-/* Hover */
-.dropdown-menu li a:hover{
+.dropdown-menu li a:hover {
   background: rgba(0,242,255,0.1);
   color: var(--accent-main);
 }
-.nav-dropdown .arrow{
+
+.nav-dropdown .arrow {
   opacity: 0;
   margin-left: 6px;
   transition: opacity .25s ease, transform .25s ease;
   transform: rotate(180deg);
 }
 
-.nav-dropdown:hover .arrow{
+.nav-dropdown:hover .arrow {
   opacity: 1;
   transform: translateY(0);
 }
@@ -220,7 +197,7 @@ nav a:hover::after {
   align-items: center;
   text-align: center;
   padding: 0 10px;
-  padding-top: 140px; 
+  padding-top: 140px;
   padding-bottom: 60px;
 }
 
@@ -268,6 +245,7 @@ nav a:hover::after {
   color: #000;
   box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
 }
+
 .index-summary-text {
   font-size: 1.3rem;
   line-height: 1.9;
@@ -293,7 +271,6 @@ section {
   position: relative;
 }
 
-/* عشان الروابط (#about / #projects) ما تدخل تحت الهيدر */
 section[id] {
   scroll-margin-top: 120px;
 }
@@ -306,8 +283,6 @@ section[id] {
   font-size: 3rem;
   margin-bottom: 60px;
   position: relative;
-
-  /* إزالة أي ميل/تحويل محتمل */
   transform: none;
 }
 
@@ -340,7 +315,6 @@ section[id] {
   opacity: 0;
   transition: 0.4s;
   pointer-events: none;
-
 }
 
 .glass-card:hover {
@@ -394,7 +368,7 @@ section[id] {
 }
 
 /* =========================
-   9) About Page (Who We Are + Team)
+   9) About Page
 ========================= */
 .about-summary {
   margin-top: 0;
@@ -478,18 +452,15 @@ section[id] {
   object-fit: cover;
   transition: 0.5s;
   transform: scale(1.1);
-
 }
 
-/* ===== Projects Card (Image + Glass Info Under) ===== */
-.project-card{
+.project-card {
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
   background: rgba(255,255,255,0.02);
   transition: 0.3s ease;
 }
-
 
 .project-card::before {
   content: "";
@@ -498,7 +469,7 @@ section[id] {
   border-radius: 18px;
   border: 2px solid var(--accent-main);
   box-shadow: 0 0 20px rgba(0, 242, 255, 0.35);
-  opacity: 0;                 /* مخفي */
+  opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
   z-index: 3;
@@ -521,7 +492,8 @@ section[id] {
   opacity: 1;
   transform: scale(1);
 }
-.project-btn{
+
+.project-btn {
   display: inline-block;
   margin-top: 14px;
   padding: 10px 22px;
@@ -535,30 +507,30 @@ section[id] {
   background: rgba(0, 242, 255, 0.05);
 }
 
-.project-btn:hover{
+.project-btn:hover {
   background: var(--accent-main);
   color: #000;
   box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
 }
 
-.project-card:hover{
+.project-card:hover {
   border-color: var(--accent-main);
   box-shadow: 0 0 25px rgba(0,242,255,0.18);
   transform: translateY(-6px);
 }
-/* الصورة */
-.project-media{
+
+.project-media {
   height: 220px;
   overflow: hidden;
 }
-.project-media img{
+
+.project-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   transition: transform .5s ease;
 }
-
 
 .project-media::after {
   content: "";
@@ -570,7 +542,8 @@ section[id] {
   transition: 0.3s ease;
   pointer-events: none;
 }
-.project-card:hover .project-media img{
+
+.project-card:hover .project-media img {
   transform: scale(1.06);
 }
 
@@ -578,12 +551,11 @@ section[id] {
   opacity: 1;
 }
 
-/* مربع شفاف تحت الصورة */
-.project-info{
+.project-info {
   padding: 20px;
   background: rgba(255,255,255,0.03);
   backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(255,255,255,0.08); /* الخط الفاصل */
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .project-info h3 {
@@ -598,7 +570,6 @@ section[id] {
   line-height: 1.6;
   margin-bottom: 14px;
 }
-
 
 /* =========================
    Phishing ML Project Page
@@ -617,17 +588,13 @@ section[id] {
   margin: 20px auto;
   display: block;
   padding: 18px;
-
   font-size: 1.05rem;
   line-height: 1.7;
-
   border-radius: 14px;
   border: 1px solid var(--glass-border);
-
   background: var(--glass-bg);
   color: var(--text-main);
   backdrop-filter: blur(12px);
-
   resize: vertical;
 }
 
@@ -646,17 +613,16 @@ section[id] {
   margin-bottom: 14px;
   font-weight: 800;
 }
+
 .result-card {
   margin: 40px auto;
   padding: 28px 34px;
   max-width: 720px;
   text-align: left;
-
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 18px;
   backdrop-filter: blur(18px);
   background: rgba(255, 255, 255, 0.04);
-
   transition: 0.35s ease;
   box-shadow: 0 0 35px rgba(0, 242, 255, 0.12);
 }
@@ -671,7 +637,6 @@ section[id] {
   box-shadow: 0 0 35px rgba(255, 77, 77, 0.55);
 }
 
-
 .result-card.medium {
   border: 1px solid #ffa500;
   background: rgba(255, 165, 0, 0.08);
@@ -681,7 +646,6 @@ section[id] {
   background: rgba(255, 165, 0, 0.18);
   box-shadow: 0 0 30px rgba(255, 165, 0, 0.45);
 }
-
 
 .result-card.low {
   border: 1px solid #00ff9c;
@@ -697,6 +661,8 @@ section[id] {
   font-size: 1.4rem;
   margin-top: 10px;
 }
+
+/*Analyze button */
 button {
   display: block;
   margin: 30px auto;
@@ -727,14 +693,13 @@ button:hover {
 .hidden {
   display: none;
 }
+
 .info-card {
   margin-top: 22px;
   padding: 22px 26px;
-
   border-radius: 14px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--glass-border);
-
   backdrop-filter: blur(10px);
 }
 
@@ -763,6 +728,7 @@ button:hover {
   text-align: center;
   letter-spacing: 1px;
 }
+
 .we-are-sub {
   text-align: center;
   color: var(--text-muted);
@@ -771,10 +737,10 @@ button:hover {
 }
 
 /* =========================
-    Articles Page
+   Articles Page
 ========================= */
 .section-title.articles-title {
-   text-align: center;
+  text-align: center;
   font-size: 3rem;
   margin: 120px auto 20px;
   margin-top: -20px;
@@ -782,11 +748,13 @@ button:hover {
   text-shadow: 0 0 10px rgba(0, 242, 255, 0.4), 0 0 25px rgba(0, 242, 255, 0.2);
   letter-spacing: 2px;
 }
+
 .articles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
+
 .articles-card {
   border-radius: 15px;
   overflow: hidden;
@@ -797,22 +765,18 @@ button:hover {
   background: rgba(255,255,255,0.02);
   transition: 0.3s ease;
 }
-.articles-card:hover{
+
+.articles-card:hover {
   border-color: var(--accent-main);
   box-shadow: 0 0 25px rgba(0,242,255,0.18);
   transform: translateY(-6px);
 }
-.section-subtitle {
-  text-align: center;
-  font-size: 1.5rem;
-  color: var(--text-main);
-  margin-top: 40px;
-}
+
 /* =========================
-    Tutorials Page
+   Tutorials Page
 ========================= */
 .section-title.tutorials-title {
-   text-align: center;
+  text-align: center;
   font-size: 3rem;
   margin: 120px auto 20px;
   margin-top: -20px;
@@ -820,11 +784,13 @@ button:hover {
   text-shadow: 0 0 10px rgba(0, 242, 255, 0.4), 0 0 25px rgba(0, 242, 255, 0.2);
   letter-spacing: 2px;
 }
+
 .tutorials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
+
 .tutorials-card {
   border-radius: 15px;
   overflow: hidden;
@@ -835,11 +801,13 @@ button:hover {
   background: rgba(255,255,255,0.02);
   transition: 0.3s ease;
 }
-.tutorials-card:hover{
+
+.tutorials-card:hover {
   border-color: var(--accent-main);
   box-shadow: 0 0 25px rgba(0,242,255,0.18);
   transform: translateY(-6px);
 }
+
 .section-subtitle {
   text-align: center;
   font-size: 1.5rem;
@@ -851,30 +819,23 @@ button:hover {
    Footer
 ========================= */
 footer {
-  margin-top: auto; 
-  
+  margin-top: auto;
   width: 100%;
   height: 100px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-top: 1px solid var(--glass-border);
   background: rgba(5, 10, 20, 0.75);
   backdrop-filter: blur(12px);
-
   font-size: 1rem;
   color: var(--text-muted);
-
   z-index: 999;
-  
-  flex-shrink: 0; /* ما ينضغط */
+  flex-shrink: 0;
 }
 
-
 /* =========================
-   12) Animations + Reveal
+   Animations + Reveal
 ========================= */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(30px); }
@@ -893,16 +854,270 @@ footer {
 }
 
 /* =========================
-   13) Responsive (Mobile)
+   Hamburger 
+========================= */
+
+.nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+.nav-overlay.active {
+  display: block;
+}
+
+/* hamburger */
+#hamburgerBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+  width: auto;
+}
+
+#hamburgerBtn span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background: var(--accent-main);
+  border-radius: 2px;
+  transition: 0.3s ease;
+}
+
+#hamburgerBtn.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+#hamburgerBtn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+#hamburgerBtn.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* =========================
+   الجوال (768px )
 ========================= */
 @media (max-width: 768px) {
   header {
     padding: 15px 20px;
+    justify-content: space-between;
   }
 
   .logo {
-    left: 20px;
-    font-size: 1.6rem;
+    position: relative;
+    left: 0;
+    font-size: 1.5rem;
+  }
+
+  #hamburgerBtn {
+    display: flex;
+  }
+
+  #mainNav {
+    position: fixed;
+    top: 0;
+    right: -320px;       
+    width: 320px;       
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(5, 10, 20, 0.98) 0%, rgba(15, 28, 48, 0.98) 100%);
+    backdrop-filter: blur(24px);
+    border-left: 1px solid rgba(0, 242, 255, 0.2);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 24px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #mainNav.open {
+    right: 0;
+  }
+
+  #mainNav::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #mainNav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  #mainNav::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 255, 0.3);
+    border-radius: 3px;
+  }
+
+  #mainNav::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 242, 255, 0.5);
+  }
+
+  #mainNav::before {
+    content: 'Menu';
+    display: block;
+    padding: 12px 24px 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-main);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 12px;
+  }
+
+  #mainNav ul {
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+    padding: 0 12px;
+  }
+
+  #mainNav ul li {
+    width: 100%;
+  }
+
+  #mainNav > ul > li > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  #mainNav > ul > li > a.active {
+    background: rgba(0, 242, 255, 0.12);
+    color: var(--accent-main);
+  }
+
+  #mainNav > ul > li > a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: var(--accent-main);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 12px rgba(0, 242, 255, 0.6);
+  }
+
+  #mainNav > ul > li > a:hover {
+    background: rgba(0, 242, 255, 0.08);
+    color: var(--accent-main);
+    padding-left: 20px;
+  }
+
+  #mainNav .nav-dropdown > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #mainNav .nav-dropdown .arrow {
+    opacity: 1;
+    display: inline-block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+    transform: rotate(0deg);
+  }
+
+  #mainNav .nav-dropdown.open .arrow {
+    transform: rotate(180deg);
+    color: var(--accent-main);
+  }
+
+  /* الـ dropdown menu */
+  #mainNav .dropdown-menu {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 242, 255, 0.15);
+    background: rgba(0, 242, 255, 0.04);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 8px;
+    margin-left: 0;
+    padding: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease, 
+                margin-top 0.3s ease;
+  }
+
+  #mainNav .nav-dropdown.open .dropdown-menu {
+    max-height: 250px;
+    opacity: 1;
+    visibility: visible;
+    margin-top: 12px;
+  }
+
+  #mainNav .dropdown-menu li {
+    border-bottom: none;
+  }
+
+  #mainNav .dropdown-menu li a {
+    display: block;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.75);
+    transition: all 0.2s ease;
+    position: relative;
+    padding-left: 28px;
+  }
+
+  #mainNav .dropdown-menu li a::before {
+    content: '→';
+    position: absolute;
+    left: 12px;
+    color: var(--accent-main);
+    opacity: 0;
+    transition: opacity 0.2s ease, left 0.2s ease;
+  }
+
+  #mainNav .dropdown-menu li a:hover::before {
+    opacity: 1;
+    left: 10px;
+  }
+
+  #mainNav .dropdown-menu li a:hover {
+    background: rgba(0, 242, 255, 0.12);
+    color: var(--accent-main);
+    padding-left: 32px;
+  }
+
+  #mainNav .dropdown-menu li + li {
+    margin-top: 4px;
   }
 
   .hero h1 {
@@ -915,17 +1130,12 @@ footer {
     font-size: 2.2rem;
   }
 
-  nav ul {
-    gap: 18px;
-  }
-}
-
-  @media (max-width: 768px) {
   .index-summary-text {
     font-size: 1.1rem;
   }
-  .glass-card .index-summary-text {
-  font-size: 1.35rem;
-  line-height: 1.9;
-}
+
+  footer {
+    height: 80px;
+    font-size: 0.9rem;
+  }
 }
