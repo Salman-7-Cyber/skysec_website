@@ -96,45 +96,164 @@ function reveal() {
 
 reveal();
 
-// --- 3. Phishing Detection API ---
+// --- 3. Validation Helpers ---
+function isTooShort(text) {
+  return text.trim().length < 10;
+}
+
+function isTooLong(text) {
+  return text.trim().length > 10000;
+}
+
+function isGibberish(text) {
+  const trimmed = text.trim();
+  const words = trimmed.match(/[a-zA-Z]{2,}/g);
+  const wordCount = words ? words.length : 0;
+  const totalTokens = trimmed.split(/\s+/).length;
+
+  if (totalTokens > 0 && (wordCount / totalTokens) < 0.3) {
+    return true;
+  }
+
+  const specialChars = trimmed.match(/[\[\]\{\}\^\\]/g);
+  const specialCount = specialChars ? specialChars.length : 0;
+
+  if (specialCount > trimmed.length * 0.2) {
+    return true;
+  }
+
+  return false;
+}
+
+// --- 4. Retry / Delay Helper ---
+function delay(seconds) {
+  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const allButtons = document.querySelectorAll('button');
+      for (let btn of allButtons) {
+        if (btn.disabled) {
+          if (attempt === 1) {
+            btn.textContent = "Analyzing...";
+          } else {
+            btn.textContent = "Please wait...";
+          }
+        }
+      }
+
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      lastError = error;
+      console.warn("Attempt " + attempt + " failed:", error.message);
+
+      if (attempt < maxRetries) {
+        await delay(5);
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+// --- 5. Phishing Detection API ---
 async function analyzeEmail() {
   const emailText = document.getElementById("emailText").value;
-  
-  if (!emailText || emailText.trim().length < 10) {
-    alert("Please enter at least 10 characters of email text.");
+
+  // --- Validation (قبل إرسال للـ API) ---
+  if (!emailText || emailText.trim().length === 0) {
+    alert("Please paste the email content first.");
     return;
   }
 
-  const analyzeBtn = document.querySelector('button[onclick="analyzeEmail()"]');
+  if (isTooShort(emailText)) {
+    alert("The text is too short.\nPlease paste a complete email to analyze.");
+    return;
+  }
+
+  if (isTooLong(emailText)) {
+    alert("The text is too long.\nPlease paste a shorter email to analyze.");
+    return;
+  }
+
+  if (isGibberish(emailText)) {
+    alert("The text appears to be unreadable or contains random characters.\nPlease paste a real email to analyze.");
+    return;
+  }
+
+  // --- Find the button ---
+  const allButtons = document.querySelectorAll('button');
+  let analyzeBtn = null;
+
+  for (let btn of allButtons) {
+    if (btn.textContent.includes("Analyze")) {
+      analyzeBtn = btn;
+      break;
+    }
+  }
+
   if (analyzeBtn) {
     analyzeBtn.disabled = true;
     analyzeBtn.textContent = "Analyzing...";
   }
 
+  // --- Send to API with retry ---
   try {
-    const response = await fetch('https://salman7qari-phishing-email-detection.hf.space/analyze', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithRetry(
+      'https://salman7qari-phishing-email-detection.hf.space/analyze',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: emailText.trim() }),
+        mode: 'cors',
       },
-      body: JSON.stringify({ text: emailText })
-    });
+      3
+    );
 
-    if (!response.ok) {
-      throw new Error('API request failed with status: ' + response.status);
-    }
-    
     const result = await response.json();
-    
-    if (result.error) {
-      throw new Error(result.error);
+    console.log("API Result:", result);
+
+    // --- Handle API errors (بعد إرسال للـ API) ---
+    if (!response.ok) {
+      if (response.status === 400) {
+        // الـ API رجع 400 = مشكلة في النص
+        // نحدد السبب من جهتنا بدل ما نعرض تفاصيل السيرفر
+        if (isTooShort(emailText)) {
+          alert("The text is too short.\nPlease paste a complete email to analyze.");
+        } else if (isTooLong(emailText)) {
+          alert("The text is too long.\nPlease paste a shorter email to analyze.");
+        } else if (isGibberish(emailText)) {
+          alert("The text appears to be unreadable or contains random characters.\nPlease paste a real email to analyze.");
+        } else {
+          alert("The text could not be processed.\nPlease try pasting the email again.");
+        }
+      } else {
+        // 500, 503, أي خطأ من السيرفر
+        // مو نقول "API نايم" عشان السيكورتي
+        alert("The service is temporarily unavailable.\nPlease try again in a few moments.");
+      }
+      return;
     }
-    
+
+    if (result.error) {
+      alert("The text could not be processed.\nPlease try pasting the email again.");
+      return;
+    }
+
     renderResult(result);
 
   } catch (error) {
-    console.error("API Error:", error);
-    alert("Failed to analyze email. Please check your connection and try again.");
+    // كل الـ retries فشلت
+    // مو نقول "API نايم" أو "connection failed" عشان السيكورتي
+    console.error("All retries failed:", error);
+    alert("The service is temporarily unavailable.\nPlease try again in a few moments.");
   } finally {
     if (analyzeBtn) {
       analyzeBtn.disabled = false;
@@ -143,6 +262,7 @@ async function analyzeEmail() {
   }
 }
 
+// --- 6. Render Results ---
 function renderResult(data) {
   const resultCard = document.getElementById("resultCard");
   const riskTitle = document.getElementById("riskTitle");
@@ -151,12 +271,17 @@ function renderResult(data) {
   const reasonsList = document.getElementById("reasonsList");
   const recommendationText = document.getElementById("recommendationText");
 
+  if (!resultCard) {
+    console.error("resultCard element not found!");
+    return;
+  }
+
   resultCard.classList.remove("hidden", "high", "medium", "low");
 
-  riskTitle.textContent = data.risk_level;
-  riskScore.textContent = (data.risk_score * 100).toFixed(2) + "%";
-  phishingType.textContent = data.phishing_type || "Unknown";
-  recommendationText.textContent = data.recommendation;
+  if (riskTitle) riskTitle.textContent = data.risk_level;
+  if (riskScore) riskScore.textContent = (data.risk_score * 100).toFixed(2) + "%";
+  if (phishingType) phishingType.textContent = data.phishing_type || "Unknown";
+  if (recommendationText) recommendationText.textContent = data.recommendation;
 
   if (data.risk_score >= 0.7) {
     resultCard.classList.add("high");
@@ -166,17 +291,19 @@ function renderResult(data) {
     resultCard.classList.add("low");
   }
 
-  reasonsList.innerHTML = "";
-  if (data.reasons && data.reasons.length > 0) {
-    data.reasons.forEach(reason => {
+  if (reasonsList) {
+    reasonsList.innerHTML = "";
+    if (data.reasons && data.reasons.length > 0) {
+      data.reasons.forEach(reason => {
+        const li = document.createElement("li");
+        li.textContent = reason;
+        reasonsList.appendChild(li);
+      });
+    } else {
       const li = document.createElement("li");
-      li.textContent = reason;
+      li.textContent = "No specific phishing indicators detected.";
       reasonsList.appendChild(li);
-    });
-  } else {
-    const li = document.createElement("li");
-    li.textContent = "No specific phishing indicators detected.";
-    reasonsList.appendChild(li);
+    }
   }
 
   resultCard.scrollIntoView({ behavior: "smooth" });
