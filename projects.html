@@ -12,45 +12,53 @@
   <!-- خلفية الجزيئات المتحركة -->
   <canvas id="canvas-bg"></canvas>
 
+   <div class="nav-overlay" id="navOverlay"></div>
+
    <!-- Header -->
   <header>
     <a href="index.html" class="logo">SKY SEC</a>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">Our Team</a></li>
-        <li class="nav-dropdown">
-          <a href="#">Projects <span class="arrow">▾</span></a>
-          <ul class="dropdown-menu">
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="articles.html">Articles</a></li>
-            <li><a href="tutorials.html">Tutorials</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-  </header>
+
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+    <nav id="mainNav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">Our Team</a></li>
+      <li class="nav-dropdown" id="projectsDropdown">
+        <a href="#" id="projectsToggle">Projects <span class="arrow">▾</span></a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="articles.html">Articles</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
 
   <section id="projects">
     <h2 class="section-title reveal">Our Projects</h2>
     <div class="projects-grid">
 
-      <!-- project 1 -->
-  <div class="project-card">
-    <!-- الصورة فقط -->
-    <div class="project-media">
-      <img src="images/phishing email detection ml.png" alt="Phishing Email">
-    </div>
-    <!-- المربع الشفاف تحت الصورة -->
-    <div class="project-info">
-      <h3>Phishing Email Detection ML</h3>
-      <p>
-        Machine learning model to detect phishing emails using NLP and classification techniques.
-      </p>
-      <a href="phishing-ml.html" class="project-btn">View Project</a>
-    </div>
+<!-- project 1 -->
+<div class="project-card">
+  <div class="project-media">
+    <img src="images/phishing email detection ml.png" alt="Phishing Email">
   </div>
-  
+  <div class="project-info">
+    <h3>Phishing Email Detection ML</h3>
+    <p>
+      Machine learning model to detect phishing emails using NLP and classification techniques.
+    </p>
+    <a href="phishing-ml.html" class="project-btn">View Project</a>
+  </div>
+</div>
+
   <!-- project 2 -->
 <div class="project-card">
   <div class="project-media">
