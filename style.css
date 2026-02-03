@@ -757,7 +757,7 @@ button:hover {
 
 
 /* =========================
-   11) "We Are" Section (Home)
+   "We Are" Section (Home)
 ========================= */
 .we-are-title {
   margin-top: 120px;
@@ -775,7 +775,7 @@ button:hover {
 }
 
 /* =========================
-    10) Articles Page
+    Articles Page
 ========================= */
 .section-title.articles-title {
    text-align: center;
@@ -852,7 +852,7 @@ button:hover {
 }
 
 /* =========================
-   11) Footer
+   Footer
 ========================= */
 footer {
   margin-top: auto; 
@@ -873,7 +873,7 @@ footer {
 
   z-index: 999;
   
-  flex-shrink: 0; /* ما ينضغط */
+  flex-shrink: 0; 
 }
 
 
@@ -933,3 +933,4 @@ footer {
   line-height: 1.9;
 }
 }
+
