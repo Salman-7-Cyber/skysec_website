@@ -14,25 +14,35 @@
 <body>
   <!-- Animated particles background -->
   <canvas id="canvas-bg"></canvas>
+  
+ <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- Header -->
   <header>
     <a href="index.html" class="logo">SKY SEC</a>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">Our Team</a></li>
-        <li class="nav-dropdown">
-          <a href="#">Projects <span class="arrow">▾</span></a>
-          <ul class="dropdown-menu">
-            <li><a href="projects.html">Projects</a></li>
-            <li><a href="articles.html">Articles</a></li>
-            <li><a href="tutorials.html">Tutorials</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-  </header>
+
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+    <nav id="mainNav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">Our Team</a></li>
+      <li class="nav-dropdown" id="projectsDropdown">
+        <a href="#" id="projectsToggle">Projects <span class="arrow">▾</span></a>
+        <ul class="dropdown-menu">
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="articles.html">Articles</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
 
   <section id="about">
 
