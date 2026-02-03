@@ -752,10 +752,6 @@ button:hover {
   color: var(--text-main);
 }
 
-
-
-
-
 /* =========================
    "We Are" Section (Home)
 ========================= */
@@ -873,7 +869,7 @@ footer {
 
   z-index: 999;
   
-  flex-shrink: 0; 
+  flex-shrink: 0; /* ما ينضغط */
 }
 
 
@@ -933,4 +929,3 @@ footer {
   line-height: 1.9;
 }
 }
-
