@@ -199,6 +199,37 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 
   throw lastError;
 }
+// --- (Hamburger Menu) ---
+document.addEventListener("DOMContentLoaded", function () {
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const mainNav = document.getElementById("mainNav");
+  const navOverlay = document.getElementById("navOverlay");
+  const projectsToggle = document.getElementById("projectsToggle");
+  const projectsDropdown = document.getElementById("projectsDropdown");
+
+  if (!hamburgerBtn || !mainNav || !navOverlay) return;
+
+  hamburgerBtn.addEventListener("click", function () {
+    hamburgerBtn.classList.toggle("active");
+    mainNav.classList.toggle("open");
+    navOverlay.classList.toggle("active");
+  });
+
+  navOverlay.addEventListener("click", function () {
+    hamburgerBtn.classList.remove("active");
+    mainNav.classList.remove("open");
+    navOverlay.classList.remove("active");
+  });
+
+  if (projectsToggle && projectsDropdown) {
+    projectsToggle.addEventListener("click", function (e) {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        projectsDropdown.classList.toggle("open");
+      }
+    });
+  }
+});
 
 // --- 6. Phishing Detection API ---
 async function analyzeEmail() {
